@@ -85,11 +85,10 @@ export PKG_CONFIG_PATH=%{_prefix}/lib/pkgconfig
 %{__autoheader}
 %{__automake}
 %configure \
-	AR="%{target}-ar" \
-	RANLIB="%{target}-ranlib" \
 	--target=%{target} \
-	--host=%{target}
-
+	--host=%{target} \
+	--enable-static
+%{__sed} -i -e 's/^deplibs_check_method=.*/deplibs_check_method="pass_all"/' libtool
 %{__make}
 
 %install
@@ -108,11 +107,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc COPYRIGHT ChangeLog README TODO
 %{_libdir}/libtiff.la
-%{_libdir}/libtiff.a
+%{_libdir}/libtiff*.a
+%{_bindir}/*.dll
 %{_includedir}/tiff*.h
 
 %files cxx
 %defattr(644,root,root,755)
 %{_libdir}/libtiffxx.la
-%{_libdir}/libtiffxx.a
+%{_libdir}/libtiffxx*.a
 %{_includedir}/tiffio.hxx
