@@ -12,7 +12,7 @@ Patch0:		%{_realname}-sec.patch
 URL:		http://www.remotesensing.org/libtiff/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
-BuildRequires:	crossmingw32-gcc
+BuildRequires:	crossmingw32-gcc-c++
 BuildRequires:	crossmingw32-libjpeg
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool
