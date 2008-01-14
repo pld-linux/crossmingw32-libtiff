@@ -1,14 +1,14 @@
 Summary:	Library for handling TIFF files - cross Mingw32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna Mingw32
-%define		_realname   libtiff
-Name:		crossmingw32-%{_realname}
+%define		realname   libtiff
+Name:		crossmingw32-%{realname}
 Version:	3.8.2
 Release:	1
 License:	BSD-like
 Group:		Development/Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/libtiff/tiff-%{version}.tar.gz
 # Source0-md5:	fbb6f446ea4ed18955e2714934e5b698
-Patch0:		%{_realname}-sec.patch
+Patch0:		%{realname}-sec.patch
 URL:		http://www.remotesensing.org/libtiff/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
@@ -24,10 +24,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		target			i386-mingw32
 %define		target_platform 	i386-pc-mingw32
-%define		arch			%{_prefix}/%{target}
 
 %define		_sysprefix		/usr
 %define		_prefix			%{_sysprefix}/%{target}
+%define		_libdir			%{_prefix}/lib
 %define		_dlldir			/usr/share/windows/wine/system
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
