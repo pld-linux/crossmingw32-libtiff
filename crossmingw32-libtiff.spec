@@ -2,16 +2,18 @@ Summary:	Library for handling TIFF files - cross Mingw32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna Mingw32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
-Version:	3.8.2
+Version:	3.9.2
 Release:	1
 License:	BSD-like
 Group:		Development/Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/libtiff/tiff-%{version}.tar.gz
-# Source0-md5:	fbb6f446ea4ed18955e2714934e5b698
+# Source0-md5:	93e56e421679c591de7552db13384cb8
 Patch0:		%{realname}-sec.patch
+Patch1:		%{realname}-glut.patch
+Patch2:		%{realname}-CVE-2009-2285.patch
 URL:		http://www.remotesensing.org/libtiff/
 BuildRequires:	autoconf >= 2.59
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	crossmingw32-gcc-c++
 BuildRequires:	crossmingw32-libjpeg
 BuildRequires:	crossmingw32-zlib
@@ -31,6 +33,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_dlldir			/usr/share/windows/wine/system
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
+
+%ifnarch %{ix86}
+# arch-specific flags (like alpha's -mieee) are not valid for i386 gcc
+%define		optflags	-O2
+%endif
+# -z options are invalid for mingw linker
+%define		filterout_ld	-Wl,-z,.*
 
 %description
 This package is a library of functions that manipulate TIFF images
@@ -106,8 +115,10 @@ Biblioteka DLL strumieni C++ libtiff dla Windows.
 %prep
 %setup -q -n tiff-%{version}
 %patch0 -p1
+%patch1 -p0
+%patch2 -p1
 
-rm -f m4/{libtool,lt*}.m4
+%{__rm} m4/{libtool,lt*}.m4
 
 %build
 %{__libtoolize}
