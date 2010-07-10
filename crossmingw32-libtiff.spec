@@ -2,12 +2,12 @@ Summary:	Library for handling TIFF files - cross Mingw32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna Mingw32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
-Version:	3.9.2
+Version:	3.9.4
 Release:	1
 License:	BSD-like
 Group:		Development/Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/libtiff/tiff-%{version}.tar.gz
-# Source0-md5:	93e56e421679c591de7552db13384cb8
+# Source0-md5:	2006c1bdd12644dbf02956955175afd6
 Patch0:		%{realname}-sec.patch
 Patch1:		%{realname}-glut.patch
 Patch2:		%{realname}-CVE-2009-2285.patch
