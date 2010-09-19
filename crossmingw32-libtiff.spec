@@ -1,5 +1,5 @@
-Summary:	Library for handling TIFF files - cross Mingw32 version
-Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna Mingw32
+Summary:	Library for handling TIFF files - cross MinGW32 version
+Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna MinGW32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
 Version:	3.9.4
@@ -43,23 +43,23 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 This package is a library of functions that manipulate TIFF images
-(cross mingw32 version).
+(cross MinGW32 version).
 
 %description -l pl.UTF-8
 Ten pakiet zawiera bibliotekę pozwalającą manipulować plikami w
-formacie TIFF (w wersji skrośnej mingw32).
+formacie TIFF (w wersji skrośnej MinGW32).
 
 %package static
-Summary:	Static libtiff library (cross mingw32 version)
-Summary(pl.UTF-8):	Statyczna biblioteka libtiff (wersja skrośna mingw32)
+Summary:	Static libtiff library (cross MinGW32 version)
+Summary(pl.UTF-8):	Statyczna biblioteka libtiff (wersja skrośna MinGW32)
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description static
-Static libtiff library (cross mingw32 version).
+Static libtiff library (cross MinGW32 version).
 
 %description static -l pl.UTF-8
-Statyczna biblioteka libtiff (wersja skrośna mingw32).
+Statyczna biblioteka libtiff (wersja skrośna MinGW32).
 
 %package dll
 Summary:	DLL libtiff library for Windows
@@ -76,29 +76,29 @@ DLL libtiff library for Windows.
 Biblioteka DLL libtiff dla Windows.
 
 %package cxx
-Summary:	libtiff C++ streams library (cross mingw32 version)
-Summary(pl.UTF-8):	Biblioteka strumieni C++ dla libtiff (wersja skrośna mingw32)
+Summary:	libtiff C++ streams library (cross MinGW32 version)
+Summary(pl.UTF-8):	Biblioteka strumieni C++ dla libtiff (wersja skrośna MinGW32)
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description cxx
-libtiff C++ streams library (cross mingw32 version).
+libtiff C++ streams library (cross MinGW32 version).
 
 %description cxx -l pl.UTF-8
-Biblioteka strumieni C++ dla libtiff (wersja skrośna mingw32).
+Biblioteka strumieni C++ dla libtiff (wersja skrośna MinGW32).
 
 %package cxx-static
-Summary:	Static libtiff C++ streams library (cross mingw32 version)
-Summary(pl.UTF-8):	Statyczna biblioteka strumieni C++ dla libtiff (wersja skrośna mingw32)
+Summary:	Static libtiff C++ streams library (cross MinGW32 version)
+Summary(pl.UTF-8):	Statyczna biblioteka strumieni C++ dla libtiff (wersja skrośna MinGW32)
 Group:		Development/Libraries
 Requires:	%{name}-cxx = %{version}-%{release}
 
 %description cxx-static
-Static libtiff C++ streams library (cross mingw32 version).
+Static libtiff C++ streams library (cross MinGW32 version).
 
 %description cxx-static -l pl.UTF-8
 Statyczna biblioteka strumieni C++ dla libtiff (wersja skrośna
-mingw32).
+MinGW32).
 
 %package cxx-dll
 Summary:	DLL libtiff C++ streams library for Windows
