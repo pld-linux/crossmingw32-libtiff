@@ -30,26 +30,6 @@
  	va_end(ap);
  	return (0);
  }
---- tiff-3.9.1/libtiff/tif_dirinfo.c.orig	2008-04-11 01:05:55.000000000 +0200
-+++ tiff-3.9.1/libtiff/tif_dirinfo.c	2009-08-31 17:48:30.568606747 +0200
-@@ -807,8 +807,6 @@ _TIFFFieldWithTag(TIFF* tif, ttag_t tag)
- 		TIFFErrorExt(tif->tif_clientdata, "TIFFFieldWithTag",
- 			     "Internal error, unknown tag 0x%x",
- 			     (unsigned int) tag);
--		assert(fip != NULL);
--		/*NOTREACHED*/
- 	}
- 	return (fip);
- }
-@@ -821,8 +819,6 @@ _TIFFFieldWithName(TIFF* tif, const char
- 	if (!fip) {
- 		TIFFErrorExt(tif->tif_clientdata, "TIFFFieldWithName",
- 			     "Internal error, unknown tag %s", field_name);
--		assert(fip != NULL);
--		/*NOTREACHED*/
- 	}
- 	return (fip);
- }
 --- tiff-3.9.1/libtiff/tif_dirread.c.orig	2009-01-01 01:10:43.000000000 +0100
 +++ tiff-3.9.1/libtiff/tif_dirread.c	2009-08-31 18:38:28.060606747 +0200
 @@ -190,6 +190,11 @@ TIFFReadDirectory(TIFF* tif)
@@ -224,18 +204,6 @@
 +			const TIFFFieldInfo *fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
  			TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
                  "Cannot handle different per-sample values for field \"%s\"",
--			_TIFFFieldWithTag(tif, dir->tdir_tag)->field_name);
-+			fip ? fip->field_name : "Unknown");
- 			goto bad;
-                 }
-             *pl = v[0];
-@@ -1788,9 +1809,10 @@ TIFFFetchPerSampleAnys(TIFF* tif, TIFFDi
- 
-             for (i = 1; i < check_count; i++)
-                 if (v[i] != v[0]) {
-+			const TIFFFieldInfo *fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
- 			TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
- 		"Cannot handle different per-sample values for field \"%s\"",
 -			_TIFFFieldWithTag(tif, dir->tdir_tag)->field_name);
 +			fip ? fip->field_name : "Unknown");
  			goto bad;
