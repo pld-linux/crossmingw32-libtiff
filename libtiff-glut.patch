@@ -1,22 +1,20 @@
---- m4/acinclude.m4~	2005-12-06 11:40:01.000000000 +0000
-+++ m4/acinclude.m4	2008-09-05 14:24:05.000000000 +0100
-@@ -391,7 +391,7 @@
-   [ax_cv_check_glut_libglut="no"
-   ax_save_LIBS="${LIBS}"
-   LIBS=""
--  ax_check_libs="-lglut32 -lglut"
-+  ax_check_libs="-lglut"
-   for ax_lib in ${ax_check_libs}; do
-     if test X$ax_compiler_ms = Xyes; then
-       ax_try_lib=`echo $ax_lib | sed -e 's/^-l//' -e 's/$/.lib/'`
---- m4/acinclude.m4~	2008-09-05 17:45:34.000000000 +0100
-+++ m4/acinclude.m4	2008-09-05 17:53:41.000000000 +0100
-@@ -379,7 +379,7 @@
-   # If X is present, assume GLUT depends on it.
-   #
-   if test "X${no_x}" != "Xyes"; then
--    GLUT_LIBS="${X_PRE_LIBS} -lXmu -lXi ${X_EXTRA_LIBS} ${GLUT_LIBS}"
-+    GLUT_LIBS="${X_PRE_LIBS} ${X_EXTRA_LIBS} ${GLUT_LIBS}"
-   fi
+--- tiff-4.0.0/m4/acinclude.m4.orig	2010-07-08 18:10:23.000000000 +0200
++++ tiff-4.0.0/m4/acinclude.m4	2011-12-24 08:14:26.299073546 +0100
+@@ -531,7 +531,7 @@
+ dnl If X is present, assume GLUT depends on it.
+ dnl
+ AS_IF([test X$no_x != Xyes],
+-      [GLUT_LIBS="${X_PRE_LIBS} -lXi ${X_EXTRA_LIBS} ${GLUT_LIBS}"])
++      [GLUT_LIBS="${X_EXTRA_LIBS} ${GLUT_LIBS}"])
  
-   AC_LANG_PUSH(C)
+ AC_CACHE_CHECK([for GLUT library], [ax_cv_check_glut_libglut],
+ [ax_cv_check_glut_libglut="no"
+@@ -540,7 +540,7 @@
+ CPPFLAGS="${GLUT_CFLAGS} ${CPPFLAGS}"
+ ax_save_LIBS="${LIBS}"
+ LIBS=""
+-ax_check_libs="-lglut32 -lglut"
++ax_check_libs="-lglut"
+ for ax_lib in ${ax_check_libs}; do
+   AS_IF([test X$ax_compiler_ms = Xyes],
+         [ax_try_lib=`echo $ax_lib | sed -e 's/^-l//' -e 's/$/.lib/'`],

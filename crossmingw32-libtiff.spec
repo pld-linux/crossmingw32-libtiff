@@ -1,24 +1,25 @@
+# TODO: jbigkit support
 Summary:	Library for handling TIFF files - cross MinGW32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna MinGW32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
-Version:	3.9.5
-Release:	2
+Version:	4.0.0
+Release:	1
 License:	BSD-like
 Group:		Development/Libraries
-Source0:	ftp://ftp.remotesensing.org/pub/libtiff/tiff-%{version}.tar.gz
-# Source0-md5:	8fc7ce3b4e1d0cc8a319336967815084
-Patch0:		%{realname}-sec.patch
-Patch1:		%{realname}-glut.patch
-Patch2:		%{realname}-CVE-2009-2285.patch
+Source0:	http://download.osgeo.org/libtiff/tiff-%{version}.tar.gz
+# Source0-md5:	456ad12e7c492b275a0d047f2ba89904
+Patch0:		%{realname}-glut.patch
+Patch1:		%{realname}-sec.patch
 URL:		http://www.remotesensing.org/libtiff/
-BuildRequires:	autoconf >= 2.59
+BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	crossmingw32-gcc-c++
 BuildRequires:	crossmingw32-libjpeg
 BuildRequires:	crossmingw32-zlib
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2.2
 Requires:	crossmingw32-libjpeg
+Requires:	crossmingw32-xz
 Requires:	crossmingw32-zlib
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -30,6 +31,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysprefix		/usr
 %define		_prefix			%{_sysprefix}/%{target}
 %define		_libdir			%{_prefix}/lib
+%define		_pkgconfigdir		%{_prefix}/lib/pkgconfig
 %define		_dlldir			/usr/share/wine/windows/system
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
@@ -67,6 +69,7 @@ Summary(pl.UTF-8):	Biblioteka DLL libtiff dla Windows
 Group:		Applications/Emulators
 Requires:	wine
 Requires:	crossmingw32-libjpeg-dll
+Requires:	crossmingw32-xz-dll
 Requires:	crossmingw32-zlib-dll
 
 %description dll
@@ -115,10 +118,7 @@ Biblioteka DLL strumieni C++ libtiff dla Windows.
 %prep
 %setup -q -n tiff-%{version}
 %patch0 -p1
-%patch1 -p0
-%patch2 -p1
-
-%{__rm} m4/{libtool,lt*}.m4
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -147,7 +147,8 @@ mv -f $RPM_BUILD_ROOT%{_prefix}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
 %{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{_libdir}/*.a
 %endif
 
-rm -rf $RPM_BUILD_ROOT%{_datadir}/{doc,man}
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/{doc,man}
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/*.exe
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -158,6 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libtiff.dll.a
 %{_libdir}/libtiff.la
 %{_includedir}/tiff*.h
+%{_pkgconfigdir}/libtiff-4.pc
 
 %files static
 %defattr(644,root,root,755)

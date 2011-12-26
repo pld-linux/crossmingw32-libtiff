@@ -1,211 +1,85 @@
---- tiff-3.9.1/libtiff/tif_dir.c.orig	2009-01-01 01:10:43.000000000 +0100
-+++ tiff-3.9.1/libtiff/tif_dir.c	2009-08-31 17:46:34.892612613 +0200
-@@ -138,6 +138,7 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va
+--- tiff-4.0.0/libtiff/tif_dir.c.orig	2011-02-19 17:26:09.000000000 +0100
++++ tiff-4.0.0/libtiff/tif_dir.c	2011-12-24 10:43:18.779372638 +0100
+@@ -153,6 +153,7 @@ _TIFFVSetField(TIFF* tif, uint32 tag, va
  {
  	static const char module[] = "_TIFFVSetField";
  
-+	const TIFFFieldInfo* fip;
++	const TIFFField* fip;
  	TIFFDirectory* td = &tif->tif_dir;
  	int status = 1;
  	uint32 v32, i, v;
-@@ -585,17 +586,19 @@ end:
+@@ -660,17 +661,19 @@ end:
  	va_end(ap);
  	return (status);
  badvalue:
-+	fip = _TIFFFindFieldInfo(tif, tag, TIFF_ANY);
++	fip = TIFFFieldWithTag(tif, tag);
  	TIFFErrorExt(tif->tif_clientdata, module,
- 		     "%s: Bad value %d for \"%s\" tag",
+ 		     "%s: Bad value %u for \"%s\" tag",
  		     tif->tif_name, v,
--		     _TIFFFieldWithTag(tif, tag)->field_name);
+-		     TIFFFieldWithTag(tif, tag)->field_name);
 +		     fip ? fip->field_name : "Unknown");
  	va_end(ap);
  	return (0);
  badvalue32:
-+	fip = _TIFFFindFieldInfo(tif, tag, TIFF_ANY);
++	fip = TIFFFieldWithTag(tif, tag);
  	TIFFErrorExt(tif->tif_clientdata, module,
  		     "%s: Bad value %u for \"%s\" tag",
  		     tif->tif_name, v32,
--		     _TIFFFieldWithTag(tif, tag)->field_name);
+-		     TIFFFieldWithTag(tif, tag)->field_name);
 +		     fip ? fip->field_name : "Unknown");
  	va_end(ap);
  	return (0);
  }
---- tiff-3.9.1/libtiff/tif_dirread.c.orig	2009-01-01 01:10:43.000000000 +0100
-+++ tiff-3.9.1/libtiff/tif_dirread.c	2009-08-31 18:38:28.060606747 +0200
-@@ -190,6 +190,11 @@ TIFFReadDirectory(TIFF* tif)
- 						       dp->tdir_tag,
- 						       dp->tdir_tag);
- 
-+					if (!compressionknown) {
-+						TIFFWarningExt(tif->tif_clientdata, module,
-+								"Ignoring, compression unknown");
-+						goto ignore;
-+					}
- 					if (!_TIFFMergeFieldInfo(tif,
- 						_TIFFCreateAnonFieldInfo(tif,
- 						dp->tdir_tag,
-@@ -583,6 +588,7 @@ TIFFReadDirectory(TIFF* tif)
+--- tiff-4.0.0/libtiff/tif_dirread.c.orig	2011-12-22 00:18:41.000000000 +0100
++++ tiff-4.0.0/libtiff/tif_dirread.c	2011-12-24 10:39:34.932698478 +0100
+@@ -3897,6 +3897,7 @@ TIFFReadDirectory(TIFF* tif)
  		 * Attempt to deal with a missing StripByteCounts tag.
  		 */
  		if (!TIFFFieldSet(tif, FIELD_STRIPBYTECOUNTS)) {
-+			const TIFFFieldInfo* fip = _TIFFFieldWithTag(tif, TIFFTAG_STRIPBYTECOUNTS);
++			const TIFFField* fip = TIFFFieldWithTag(tif, TIFFTAG_STRIPBYTECOUNTS);
  			/*
  			 * Some manufacturers violate the spec by not giving
  			 * the size of the strips.  In this case, assume there
-@@ -599,7 +605,7 @@ TIFFReadDirectory(TIFF* tif)
- 				"%s: TIFF directory is missing required "
+@@ -3912,7 +3913,7 @@ TIFFReadDirectory(TIFF* tif)
+ 			TIFFWarningExt(tif->tif_clientdata, module,
+ 				"TIFF directory is missing required "
  				"\"%s\" field, calculating from imagelength",
- 				tif->tif_name,
--				_TIFFFieldWithTag(tif,TIFFTAG_STRIPBYTECOUNTS)->field_name);
+-				TIFFFieldWithTag(tif,TIFFTAG_STRIPBYTECOUNTS)->field_name);
 +				fip ? fip->field_name : "Unknown");
  			if (EstimateStripByteCounts(tif, dir, dircount) < 0)
  			    goto bad;
  		/*
-@@ -626,6 +632,7 @@ TIFFReadDirectory(TIFF* tif)
- 		} else if (td->td_nstrips == 1
- 			   && td->td_stripoffset[0] != 0
+@@ -3940,6 +3941,7 @@ TIFFReadDirectory(TIFF* tif)
+                            && _TIFFFillStriles(tif)
+ 			   && tif->tif_dir.td_stripoffset[0] != 0
  			   && BYTECOUNTLOOKSBAD) {
-+			const TIFFFieldInfo* fip = _TIFFFieldWithTag(tif, TIFFTAG_STRIPBYTECOUNTS);
++			const TIFFField* fip = TIFFFieldWithTag(tif, TIFFTAG_STRIPBYTECOUNTS);
  			/*
  			 * XXX: Plexus (and others) sometimes give a value of
  			 * zero for a tag when they don't know what the
-@@ -635,7 +642,7 @@ TIFFReadDirectory(TIFF* tif)
+@@ -3948,7 +3950,7 @@ TIFFReadDirectory(TIFF* tif)
+ 			 */
  			TIFFWarningExt(tif->tif_clientdata, module,
- 	"%s: Bogus \"%s\" field, ignoring and calculating from imagelength",
- 				    tif->tif_name,
--				    _TIFFFieldWithTag(tif,TIFFTAG_STRIPBYTECOUNTS)->field_name);
-+				    fip ? fip->field_name : "Unknown");
+ 			    "Bogus \"%s\" field, ignoring and calculating from imagelength",
+-			    TIFFFieldWithTag(tif,TIFFTAG_STRIPBYTECOUNTS)->field_name);
++			    fip ? fip->field_name : "Unknown");
  			if(EstimateStripByteCounts(tif, dir, dircount) < 0)
  			    goto bad;
- 		} else if (td->td_planarconfig == PLANARCONFIG_CONTIG
-@@ -644,6 +651,7 @@ TIFFReadDirectory(TIFF* tif)
- 			   && td->td_stripbytecount[0] != td->td_stripbytecount[1]
-                            && td->td_stripbytecount[0] != 0 
-                            && td->td_stripbytecount[1] != 0 ) {
-+			const TIFFFieldInfo* fip = _TIFFFieldWithTag(tif, TIFFTAG_STRIPBYTECOUNTS);
+ 
+@@ -3959,6 +3961,7 @@ TIFFReadDirectory(TIFF* tif)
+ 			   && tif->tif_dir.td_stripbytecount[0] != tif->tif_dir.td_stripbytecount[1]
+ 			   && tif->tif_dir.td_stripbytecount[0] != 0
+ 			   && tif->tif_dir.td_stripbytecount[1] != 0 ) {
++			const TIFFField* fip = TIFFFieldWithTag(tif, TIFFTAG_STRIPBYTECOUNTS);
  			/*
- 			 * XXX: Some vendors fill StripByteCount array with 
-                          * absolutely wrong values (it can be equal to 
-@@ -653,7 +661,7 @@ TIFFReadDirectory(TIFF* tif)
+ 			 * XXX: Some vendors fill StripByteCount array with
+ 			 * absolutely wrong values (it can be equal to
+@@ -3971,7 +3974,7 @@ TIFFReadDirectory(TIFF* tif)
+ 			 */
  			TIFFWarningExt(tif->tif_clientdata, module,
- 	"%s: Wrong \"%s\" field, ignoring and calculating from imagelength",
- 				    tif->tif_name,
--				    _TIFFFieldWithTag(tif,TIFFTAG_STRIPBYTECOUNTS)->field_name);
-+				    fip ? fip->field_name : "Unknown");
+ 			    "Wrong \"%s\" field, ignoring and calculating from imagelength",
+-			    TIFFFieldWithTag(tif,TIFFTAG_STRIPBYTECOUNTS)->field_name);
++			    fip ? fip->field_name : "Unknown");
  			if (EstimateStripByteCounts(tif, dir, dircount) < 0)
  			    goto bad;
- 		}
-@@ -1024,16 +1032,18 @@ TIFFCheckDirOffset(TIFF* tif, toff_t dir
- static int
- CheckDirCount(TIFF* tif, TIFFDirEntry* dir, uint32 count)
- {
-+	const TIFFFieldInfo* fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
-+
- 	if (count > dir->tdir_count) {
- 		TIFFWarningExt(tif->tif_clientdata, tif->tif_name,
- 	"incorrect count for field \"%s\" (%u, expecting %u); tag ignored",
--		    _TIFFFieldWithTag(tif, dir->tdir_tag)->field_name,
-+		    fip ? fip->field_name : "Unknown",
- 		    dir->tdir_count, count);
- 		return (0);
- 	} else if (count < dir->tdir_count) {
- 		TIFFWarningExt(tif->tif_clientdata, tif->tif_name,
- 	"incorrect count for field \"%s\" (%u, expecting %u); tag trimmed",
--		    _TIFFFieldWithTag(tif, dir->tdir_tag)->field_name,
-+		    fip ? fip->field_name : "Unknown",
- 		    dir->tdir_count, count);
- 		return (1);
- 	}
-@@ -1153,6 +1163,7 @@ static tsize_t
- TIFFFetchData(TIFF* tif, TIFFDirEntry* dir, char* cp)
- {
- 	uint32 w = TIFFDataWidth((TIFFDataType) dir->tdir_type);
-+	const TIFFFieldInfo* fip;
- 	/* 
- 	 * FIXME: butecount should have tsize_t type, but for now libtiff
- 	 * defines tsize_t as a signed 32-bit integer and we are losing
-@@ -1200,9 +1211,10 @@ TIFFFetchData(TIFF* tif, TIFFDirEntry* d
- 	}
- 	return (cc);
- bad:
-+	fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
- 	TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
- 		     "Error fetching data for field \"%s\"",
--		     _TIFFFieldWithTag(tif, dir->tdir_tag)->field_name);
-+		     fip ? fip->field_name : "Unknown");
- 	return (tsize_t) 0;
- }
- 
-@@ -1229,9 +1241,10 @@ static int
- cvtRational(TIFF* tif, TIFFDirEntry* dir, uint32 num, uint32 denom, float* rv)
- {
- 	if (denom == 0) {
-+		const TIFFFieldInfo *fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
- 		TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
- 		    "%s: Rational with zero denominator (num = %u)",
--		    _TIFFFieldWithTag(tif, dir->tdir_tag)->field_name, num);
-+		    fip ? fip->field_name : "Unknown", num);
- 		return (0);
- 	} else {
- 		if (dir->tdir_type == TIFF_RATIONAL)
-@@ -1351,9 +1364,10 @@ TIFFFetchShortPair(TIFF* tif, TIFFDirEnt
- 	 * check on tdir_count, this should never be greater than two.
- 	 */
- 	if (dir->tdir_count > 2) {
-+		const TIFFFieldInfo* fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
- 		TIFFWarningExt(tif->tif_clientdata, tif->tif_name,
- 		"unexpected count for field \"%s\", %u, expected 2; ignored",
--			_TIFFFieldWithTag(tif, dir->tdir_tag)->field_name,
-+			fip ? fip->field_name : "Unknown",
- 			dir->tdir_count);
- 		return 0;
- 	}
-@@ -1529,11 +1543,14 @@ TIFFFetchAnyArray(TIFF* tif, TIFFDirEntr
- 		/* TIFF_NOTYPE */
- 		/* TIFF_ASCII */
- 		/* TIFF_UNDEFINED */
-+		{
-+		const TIFFFieldInfo* fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
- 		TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
- 			     "cannot read TIFF_ANY type %d for field \"%s\"",
- 			     dir->tdir_type,
--			     _TIFFFieldWithTag(tif, dir->tdir_tag)->field_name);
-+			     fip ? fip->field_name : "Unknown");
- 		return (0);
-+		}
- 	}
- 	return (1);
- }
-@@ -1548,6 +1565,8 @@ TIFFFetchNormalTag(TIFF* tif, TIFFDirEnt
- 	int ok = 0;
- 	const TIFFFieldInfo* fip = _TIFFFieldWithTag(tif, dp->tdir_tag);
- 
-+	if (fip == NULL)
-+		return (0);
- 	if (dp->tdir_count > 1) {		/* array of values */
- 		char* cp = NULL;
- 
-@@ -1707,9 +1726,10 @@ TIFFFetchPerSampleShorts(TIFF* tif, TIFF
- 
-             for (i = 1; i < check_count; i++)
-                 if (v[i] != v[0]) {
-+			const TIFFFieldInfo *fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
- 			TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
-                 "Cannot handle different per-sample values for field \"%s\"",
--			_TIFFFieldWithTag(tif, dir->tdir_tag)->field_name);
-+			fip ? fip->field_name : "Unknown");
- 			goto bad;
-                 }
-             *pl = v[0];
-@@ -1748,9 +1768,10 @@ TIFFFetchPerSampleLongs(TIFF* tif, TIFFD
-                 check_count = samples;
-             for (i = 1; i < check_count; i++)
-                 if (v[i] != v[0]) {
-+			const TIFFFieldInfo *fip = _TIFFFieldWithTag(tif, dir->tdir_tag);
- 			TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
-                 "Cannot handle different per-sample values for field \"%s\"",
--			_TIFFFieldWithTag(tif, dir->tdir_tag)->field_name);
-+			fip ? fip->field_name : "Unknown");
- 			goto bad;
-                 }
-             *pl = v[0];
+ #endif /* !defined(DEFER_STRILE_LOAD) */                        
