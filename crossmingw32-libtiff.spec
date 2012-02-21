@@ -3,14 +3,13 @@ Summary:	Library for handling TIFF files - cross MinGW32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna MinGW32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
-Version:	4.0.0
+Version:	4.0.1
 Release:	1
 License:	BSD-like
 Group:		Development/Libraries
 Source0:	http://download.osgeo.org/libtiff/tiff-%{version}.tar.gz
-# Source0-md5:	456ad12e7c492b275a0d047f2ba89904
+# Source0-md5:	fae149cc9da35c598d8be897826dfc63
 Patch0:		%{realname}-glut.patch
-Patch1:		%{realname}-sec.patch
 URL:		http://www.remotesensing.org/libtiff/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11
@@ -118,7 +117,6 @@ Biblioteka DLL strumieni C++ libtiff dla Windows.
 %prep
 %setup -q -n tiff-%{version}
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize}
