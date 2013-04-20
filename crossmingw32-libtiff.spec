@@ -4,7 +4,7 @@ Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja sk
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
 Version:	4.0.3
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Development/Libraries
 Source0:	http://download.osgeo.org/libtiff/tiff-%{version}.tar.gz
@@ -34,6 +34,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_dlldir			/usr/share/wine/windows/system
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
+%define		__pkgconfig_provides	%{nil}
 
 %ifnarch %{ix86}
 # arch-specific flags (like alpha's -mieee) are not valid for i386 gcc
