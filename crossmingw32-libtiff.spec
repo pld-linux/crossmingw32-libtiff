@@ -1,23 +1,25 @@
-# TODO: jbigkit support
+# TODO: jbigkit, zstd support
 Summary:	Library for handling TIFF files - cross MinGW32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna MinGW32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
-Version:	4.0.9
+Version:	4.0.10
 Release:	1
 License:	BSD-like
 Group:		Development/Libraries
 Source0:	http://download.osgeo.org/libtiff/tiff-%{version}.tar.gz
-# Source0-md5:	54bad211279cc93eb4fca31ba9bfdc79
+# Source0-md5:	114192d7ebe537912a2b97408832e7fd
 Patch0:		%{realname}-glut.patch
 URL:		http://www.remotesensing.org/libtiff/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	crossmingw32-gcc-c++
 BuildRequires:	crossmingw32-libjpeg
+BuildRequires:	crossmingw32-libwebp
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool >= 2:2.2
 Requires:	crossmingw32-libjpeg
+Requires:	crossmingw32-libwebp
 Requires:	crossmingw32-xz
 Requires:	crossmingw32-zlib
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -72,6 +74,7 @@ Summary(pl.UTF-8):	Biblioteka DLL libtiff dla Windows
 Group:		Applications/Emulators
 Requires:	wine
 Requires:	crossmingw32-libjpeg-dll
+Requires:	crossmingw32-libwebp-dll
 Requires:	crossmingw32-xz-dll
 Requires:	crossmingw32-zlib-dll
 
@@ -157,7 +160,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYRIGHT ChangeLog README TODO
+%doc COPYRIGHT ChangeLog README.md TODO
 %{_libdir}/libtiff.dll.a
 %{_libdir}/libtiff.la
 %{_includedir}/tiff*.h
