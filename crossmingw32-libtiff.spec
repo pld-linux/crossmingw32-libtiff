@@ -1,16 +1,16 @@
-# TODO: jbigkit, zstd support
+# TODO: jbigkit, zstd, libdeflate support
 Summary:	Library for handling TIFF files - cross MinGW32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna MinGW32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
-Version:	4.0.10
+Version:	4.2.0
 Release:	1
 License:	BSD-like
 Group:		Development/Libraries
 Source0:	http://download.osgeo.org/libtiff/tiff-%{version}.tar.gz
-# Source0-md5:	114192d7ebe537912a2b97408832e7fd
+# Source0-md5:	2bbf6db1ddc4a59c89d6986b368fc063
 Patch0:		%{realname}-glut.patch
-URL:		http://www.remotesensing.org/libtiff/
+URL:		http://www.simplesystems.org/libtiff/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	crossmingw32-gcc-c++
