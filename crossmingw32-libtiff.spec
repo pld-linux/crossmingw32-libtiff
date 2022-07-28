@@ -3,12 +3,12 @@ Summary:	Library for handling TIFF files - cross MinGW32 version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie TIFF - wersja skrośna MinGW32
 %define		realname   libtiff
 Name:		crossmingw32-%{realname}
-Version:	4.3.0
+Version:	4.4.0
 Release:	1
 License:	BSD-like
 Group:		Development/Libraries
-Source0:	http://download.osgeo.org/libtiff/tiff-%{version}.tar.gz
-# Source0-md5:	0a2e4744d1426a8fc8211c0cdbc3a1b3
+Source0:	http://download.osgeo.org/libtiff/tiff-%{version}.tar.xz
+# Source0-md5:	47d72beb1171df09502e74566b4d1b43
 Patch0:		%{realname}-glut.patch
 URL:		http://www.simplesystems.org/libtiff/
 BuildRequires:	autoconf >= 2.64
