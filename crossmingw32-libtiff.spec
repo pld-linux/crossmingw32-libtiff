@@ -124,7 +124,7 @@ Biblioteka DLL strumieni C++ libtiff dla Windows.
 
 %prep
 %setup -q -n tiff-%{version}
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 %{__libtoolize}
